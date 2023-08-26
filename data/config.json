@@ -1,0 +1,22 @@
+{
+  "application": {
+    "logLevel": "info",
+    "hideLogo": false,
+    "fetchInterval": 60000
+  },
+  "webServer": {
+    "port": 9082,
+    "httpPath": "/",
+    "wsPath": "/ws"
+  },
+  "life360": {
+    "clientToken": "Life360 Token",
+    "username": "you@me.com",
+    "password": "verysecret",
+    "circle": "MyFamily",
+    "member": "John Dear"
+  },
+  "openweathermap": {
+    "apiKey": "123abc456def"
+  }
+}

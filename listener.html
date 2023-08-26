@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Relay Client</title>
+</head>
+<body>
+  <h1>WebSocket Relay Client</h1>
+  <pre id="timestamp"></pre>
+  <pre id="data"></pre>
+
+  <script>
+    const ws = new WebSocket('ws://localhost:9082'); // Replace with your server URL
+
+    ws.onopen = () => {
+		console.log('Connected to WebSocket server.');
+    };
+
+    ws.onmessage = (event) => {
+		const data = JSON.parse(event.data);
+		var currentdate = new Date(); 
+		var datetime = "Last Sync: " + currentdate.getDate() + "/"
+						+ (currentdate.getMonth()+1)  + "/" 
+						+ currentdate.getFullYear() + " @ "  
+						+ currentdate.getHours() + ":"  
+						+ currentdate.getMinutes() + ":" 
+						+ currentdate.getSeconds();
+						
+		document.getElementById('timestamp').innerText = datetime;
+		document.getElementById('data').innerText = JSON.stringify(data, null, 2);
+    };
+
+    ws.onclose = () => {
+		console.log('WebSocket connection closed.');
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+# Logs
+logs
+*.log
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Environment files
+.env
+.env.*
+
+# Compiled output
+dist/
+build/
+out/
+output/
+.tmp/
+.bundle/
+
+# Build process
+build-log.txt
+yarn-error.log
+
+# dotenv environment variables file
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# VS Code settings
+.vscode/
+
+# IDE settings
+.idea/
+
+# macOS system files
+.DS_Store
+
+# Node.js debugging files
+node_modules/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.vcproj
+*.vcxproj.*
+*.suo
+*.pdb
+*.user
+*.dbmdl
+*.dbproj
+.vscode
+
+# Node.js helper files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+debug.log
+
+# Utilities
+run.bat
