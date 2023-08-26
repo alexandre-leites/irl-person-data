@@ -104,7 +104,7 @@ class ServerManager {
 
   private async updateWeatherDetails() {
     logger.info('[OpenWeatherMap] Fetching user weather details');
-    const weatherData = await this.weather.fetchWeather(this.lastData.userPosition.latitude, this.lastData.userPosition.longitude);
+    const weatherData = await this.weather.fetchWeather(this.lastData.userPosition.location.latitude, this.lastData.userPosition.location.longitude);
     this.lastData.weatherData = weatherData;
 
     return weatherData;
@@ -128,7 +128,7 @@ class ServerManager {
       }
 
       // Verify if we need to update weather data
-      if (currentTime - this.lastWeatherFetch >= (config.openweathermap.fetchInterval * 1000)) {
+      if (this.lastData.userPosition && (currentTime - this.lastWeatherFetch) >= (config.openweathermap.fetchInterval * 1000)) {
         this.lastWeatherFetch = currentTime;
         shouldUpdate = true;
         
