@@ -20,6 +20,10 @@ interface Life360Config {
   member: string;
 }
 
+interface OpenStreetMapConfig {
+  language: string;
+}
+
 interface OpenWeatherMapConfig {
   apiKey: string;
 }
@@ -29,6 +33,7 @@ interface Config {
   webServer: WebServerConfig;
   life360: Life360Config;
   openweathermap: OpenWeatherMapConfig;
+  openstreetmap: OpenStreetMapConfig;
 }
 
 const config: Config = JSON.parse(fs.readFileSync('./data/config.json', 'utf8'));
@@ -45,5 +50,6 @@ config.life360.password = process.env.LIFE360_PASSWORD || config.life360.passwor
 config.life360.circle = process.env.LIFE360_CIRCLE || config.life360.circle;
 config.life360.member = process.env.LIFE360_MEMBER || config.life360.member;
 config.openweathermap.apiKey = process.env.OPENWEATHERMAP_API_KEY || config.openweathermap.apiKey;
+config.openstreetmap.language = process.env.OPENSTREETMAP_LANGUAGE || config.openstreetmap.language;
 
 export default config;

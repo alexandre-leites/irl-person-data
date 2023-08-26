@@ -18,5 +18,8 @@
   },
   "openweathermap": {
     "apiKey": "123abc456def"
+  },
+  "openstreetmap": {
+    "language": "en-us"
   }
 }

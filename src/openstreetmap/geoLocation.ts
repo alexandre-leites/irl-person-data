@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import config from '../../config';
 
 interface LocationDetails {
   place_id: number;
@@ -39,7 +40,8 @@ class GeoLocation {
   getLocationDetails(lat: number, lon: number): Promise<LocationDetails | ErrorResponse> {
     const baseUrl = 'https://nominatim.openstreetmap.org/reverse';
     const format = 'json';
-    const apiUrl = `${baseUrl}?format=${format}&lat=${lat}&lon=${lon}`;
+    const language = config.openstreetmap.language || 'en-us';
+    const apiUrl = `${baseUrl}?format=${format}&lat=${lat}&lon=${lon}&accept-language=${language}`;
 
     return axios.get(apiUrl)
       .then((response: AxiosResponse<LocationDetails>) => {
