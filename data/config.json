@@ -1,8 +1,7 @@
 {
   "application": {
     "logLevel": "info",
-    "hideLogo": false,
-    "fetchInterval": 60000
+    "hideLogo": false
   },
   "webServer": {
     "port": 9082,
@@ -14,10 +13,12 @@
     "username": "you@me.com",
     "password": "verysecret",
     "circle": "MyFamily",
-    "member": "John Dear"
+    "member": "John Dear",
+    "fetchInterval": 60
   },
   "openweathermap": {
-    "apiKey": "123abc456def"
+    "apiKey": "123abc456def",
+    "fetchInterval": 300
   },
   "openstreetmap": {
     "language": "en-us"

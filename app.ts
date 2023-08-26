@@ -35,9 +35,11 @@ function displayConfig() {
     logger.info(`> > Password: ${config.life360.password}`);
     logger.info(`> > Circle: ${config.life360.circle}`);
     logger.info(`> > Member: ${config.life360.member}`);
+    logger.info(`> > Fetch Interval: ${config.life360.fetchInterval}`);
 
     logger.info(`> OpenWeatherMap: `);
     logger.info(`> > API Key: ${config.openweathermap.apiKey}`);
+    logger.info(`> > Fetch Interval: ${config.openweathermap.fetchInterval}`);
 }
 
 displayLogo();
