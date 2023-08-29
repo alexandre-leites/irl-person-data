@@ -30,6 +30,7 @@ class Weather {
         const currentTimeAtLocation = new Date(data.current.dt * 1000);
         const sunriseTimeAtLocation = new Date(data.current.sunrise * 1000);
         const sunsetTimeAtLocation = new Date(data.current.sunset * 1000);
+        const timezoneAtLocation = data.timezone;
 
         return {
           ...weatherObject,
@@ -41,6 +42,7 @@ class Weather {
           currentTimeAtLocation,
           sunriseTimeAtLocation,
           sunsetTimeAtLocation,
+          timezoneAtLocation,
         };
       })
       .catch((error: any) => {
