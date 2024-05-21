@@ -94,12 +94,12 @@ class TraccarManager {
       const message = JSON.parse(data.toString());
       if (message.devices) {
         this.devices = message.devices;
-        logger.info(`[Traccar WebSocket API] Received device information: ${this.devices}`);
+        logger.info(`[Traccar WebSocket API] Received device information: ${JSON.stringify(this.devices)}`);
       }
 
       if (message.positions) {
         this.positions = message.positions;
-        logger.info(`[Traccar WebSocket API] Received position information: ${this.positions}`);
+        logger.info(`[Traccar WebSocket API] Received position information: ${JSON.stringify(this.positions)}`);
       }
     } catch (error) {
       console.error('[Traccar WebSocket API] Error parsing message:', error);
@@ -110,15 +110,18 @@ class TraccarManager {
     logger.info(`[Traccar WebSocket API] Searching for device with uniqueId: ${uniqueId}, devices: ${JSON.stringify(this.devices)}`);
     const device = this.devices.find(device => device.uniqueId === uniqueId);
     if (!device) {
+      logger.info(`[Traccar WebSocket API] Device with uniqueId: ${uniqueId} not found.`);
       return null; // Device not found
     }
 
     logger.info(`[Traccar WebSocket API] Searching for position with deviceId: ${device.id}, devices: ${JSON.stringify(this.positions)}`);
     const position = this.positions.find(position => position.deviceId === device.id);
     if (!position) {
+      logger.info(`[Traccar WebSocket API] Position for deviceId: ${device.id} not found.`);
       return null; // Device has no position
     }
 
+    logger.info(`[Traccar WebSocket API] Found position: ${JSON.stringify(position)}`);
     return position;
   }
 }
