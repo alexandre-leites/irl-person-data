@@ -107,13 +107,13 @@ class TraccarManager {
   }
 
   public async getPositionByUniqueId(uniqueId: string): Promise<TraccarPosition | null> {
-    logger.info(`[Traccar WebSocket API] Searching for device with uniqueId: ${uniqueId}, devices: ${this.devices}`);
+    logger.info(`[Traccar WebSocket API] Searching for device with uniqueId: ${uniqueId}, devices: ${JSON.stringify(this.devices)}`);
     const device = this.devices.find(device => device.uniqueId === uniqueId);
     if (!device) {
       return null; // Device not found
     }
 
-    logger.info(`[Traccar WebSocket API] Searching for position with deviceId: ${device.id}, devices: ${this.positions}`);
+    logger.info(`[Traccar WebSocket API] Searching for position with deviceId: ${device.id}, devices: ${JSON.stringify(this.positions)}`);
     const position = this.positions.find(position => position.deviceId === device.id);
     if (!position) {
       return null; // Device has no position
