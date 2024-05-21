@@ -84,6 +84,11 @@ class ServerManager {
   }
 
   private async updateLocationDetails() {
+    if (!this.lastData.userPosition) {
+      logger.info('[OpenStreetMap] Missing location details. Skipping...');
+      return this.lastData.locationDetails;
+    }
+
     const latitude = parseFloat(this.lastData.userPosition.latitude);
     const longitude = parseFloat(this.lastData.userPosition.longitude);
 
@@ -96,6 +101,11 @@ class ServerManager {
   }
 
   private async updateWeatherDetails() {
+    if (!this.lastData.userPosition) {
+      logger.info('[OpenWeatherMap] Missing location details. Skipping...');
+      return this.lastData.weatherData;
+    }
+
     logger.info('[OpenWeatherMap] Fetching user weather details');
     const weatherData = await this.weather.fetchWeather(this.lastData.userPosition.latitude, this.lastData.userPosition.longitude);
     this.lastData.weatherData = weatherData;
