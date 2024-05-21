@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import WebSocket from 'ws';
+import logger from '../utils/logger';
 
 interface TraccarDevice {
   id: number;
@@ -57,26 +58,37 @@ class TraccarManager {
       await this.fetchSession();
     }
 
-    if (this.sessionCookie) {
+    if (this.sessionCookie && (!this.ws || this.ws.readyState === WebSocket.CLOSED)) {
       // Create WebSocket connection using the retrieved session cookie
-      if(!this.ws) {
-        this.ws = new WebSocket(this.websocketUrl, {
-          headers: {
-            Cookie: `JSESSIONID=${this.sessionCookie}`,
-          },
-        });
-      }
+      this.ws = new WebSocket(this.websocketUrl, {
+        headers: {
+          Cookie: `JSESSIONID=${this.sessionCookie}`,
+        },
+      });
 
-      if (this.ws) {
-        this.ws.on('message', (data) => {
-          this.handleMessage(data);
-        });
-      } else {
+      this.ws.on('open', () => {
+        logger.info('[Traccar WebSocket API] WebSocket connection opened');
+      });
+
+      this.ws.on('message', (data) => {
+        this.handleMessage(data);
+      });
+
+      this.ws.on('close', () => {
+        logger.error('[Traccar WebSocket API] WebSocket connection closed. Attempting to reconnect on the next update.');
         this.sessionCookie = null;
-        throw new Error(`Failed to connect with the Traccar WebSocket API`);
-      }
+        this.ws = null;
+      });
+
+      this.ws.on('error', (error) => {
+        logger.error(`[Traccar WebSocket API] WebSocket error: ${error}`);
+        this.sessionCookie = null;
+        this.ws = null;
+      });
     } else {
-      throw new Error(`Failed to obtain session cookies`);
+      this.sessionCookie = null;
+      this.ws = null;
+      throw new Error(`Failed to connect with the Traccar WebSocket API`);
     }
   }
 
@@ -85,12 +97,12 @@ class TraccarManager {
       const message = JSON.parse(data.toString());
       if (message.devices) {
         this.devices = message.devices;
-        console.log('[Traccar WebSocket API] Received device information: ', this.devices);
+        logger.info('[Traccar WebSocket API] Received device information');
       }
 
       if (message.positions) {
         this.positions = message.positions;
-        console.log('[Traccar WebSocket API] Received position information: ', this.positions);
+        logger.info('[Traccar WebSocket API] Received position information');
       }
     } catch (error) {
       console.error('[Traccar WebSocket API] Error parsing message:', error);
