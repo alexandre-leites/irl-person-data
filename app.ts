@@ -29,13 +29,12 @@ function displayConfig() {
     logger.info(`> > HTTP Path: ${config.webServer.httpPath}`);
     logger.info(`> > WebSocket Path: ${config.webServer.wsPath}`);
 
-    logger.info(`> Life360: `);
-    logger.info(`> > Client Token: ${config.life360.clientToken}`);
-    logger.info(`> > Username: ${config.life360.username}`);
-    logger.info(`> > Password: ${config.life360.password}`);
-    logger.info(`> > Circle: ${config.life360.circle}`);
-    logger.info(`> > Member: ${config.life360.member}`);
-    logger.info(`> > Fetch Interval: ${config.life360.fetchInterval}`);
+    logger.info(`> Traccar: `);
+    logger.info(`> > API Token: ${config.traccar.apiToken}`);
+    logger.info(`> > API Base URL: ${config.traccar.apiBaseUrl}`);
+    logger.info(`> > Websocket URL: ${config.traccar.websocketUrl}`);
+    logger.info(`> > Device UID: ${config.traccar.deviceUniqueId}`);
+    logger.info(`> > Fetch Interval: ${config.traccar.fetchInterval}`);
 
     logger.info(`> OpenWeatherMap: `);
     logger.info(`> > API Key: ${config.openweathermap.apiKey}`);
