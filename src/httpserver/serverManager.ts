@@ -71,10 +71,6 @@ class ServerManager {
   }
 
   private async updatePositionData() {
-    // Authenticate
-    logger.info('[Traccar] Connect');
-    await this.traccarManager.connect();
-
     // Fetch Data
     logger.info('[Traccar] Fetching Position');
     const userPosition = await this.traccarManager.getPositionByUniqueId(config.traccar.deviceUniqueId);
@@ -117,11 +113,14 @@ class ServerManager {
     try {
       const currentTime = Date.now();
       var shouldUpdate = false;
-      
+
       // Verify if we need to update position data
       if (currentTime - this.lastPositionFetch >= (config.traccar.fetchInterval * 1000)) {
         this.lastPositionFetch = currentTime;
         shouldUpdate = true;
+
+        // Verify Traccar connection
+        await this.traccarManager.checkConnection();
 
         // Update Location
         await this.updatePositionData();
@@ -134,7 +133,7 @@ class ServerManager {
       if (this.lastData.userPosition && (currentTime - this.lastWeatherFetch) >= (config.openweathermap.fetchInterval * 1000)) {
         this.lastWeatherFetch = currentTime;
         shouldUpdate = true;
-        
+
         // Update Weather Details
         await this.updateWeatherDetails();
       }
@@ -162,14 +161,13 @@ class ServerManager {
     // Explicitly bind the route handler function to the current instance
     this.app.get('/', this.handleHttpGet.bind(this));
 
-    // Fetch initial data
-    this.fetchData();
-
-    // Set update interval
-    setInterval(() => {
-      this.fetchData();
-    }, 1000);
-
+    // Connect to Traccar Websocket
+    this.traccarManager.connect().then(() => {
+      // Set update interval
+      setInterval(() => {
+        this.fetchData();
+      }, 1000);
+    });
   }
 }
 

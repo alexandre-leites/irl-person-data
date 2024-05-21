@@ -58,37 +58,34 @@ class TraccarManager {
       await this.fetchSession();
     }
 
-    if (this.sessionCookie && (!this.ws || this.ws.readyState === WebSocket.CLOSED)) {
-      // Create WebSocket connection using the retrieved session cookie
-      this.ws = new WebSocket(this.websocketUrl, {
-        headers: {
-          Cookie: `JSESSIONID=${this.sessionCookie}`,
-        },
-      });
+    // Create WebSocket connection using the retrieved session cookie
+    this.ws = new WebSocket(this.websocketUrl, {
+      headers: {
+        Cookie: `JSESSIONID=${this.sessionCookie}`,
+      },
+    });
 
-      this.ws.on('open', () => {
-        logger.info('[Traccar WebSocket API] WebSocket connection opened');
-      });
+    this.ws.on('open', () => {
+      logger.info('[Traccar WebSocket API] WebSocket connection opened');
+    });
 
-      this.ws.on('message', (data) => {
-        this.handleMessage(data);
-      });
+    this.ws.on('message', (data) => {
+      this.handleMessage(data);
+    });
 
-      this.ws.on('close', () => {
-        logger.error('[Traccar WebSocket API] WebSocket connection closed. Attempting to reconnect on the next update.');
-        this.sessionCookie = null;
-        this.ws = null;
-      });
+    this.ws.on('close', () => {
+      logger.error('[Traccar WebSocket API] WebSocket connection closed. Attempting to reconnect on the next update.');
+    });
 
-      this.ws.on('error', (error) => {
-        logger.error(`[Traccar WebSocket API] WebSocket error: ${error}`);
-        this.sessionCookie = null;
-        this.ws = null;
-      });
-    } else {
+    this.ws.on('error', (error) => {
+      logger.error(`[Traccar WebSocket API] WebSocket error: ${error}`);
+    });
+  }
+
+  public async checkConnection(): Promise<void> {
+    if (!this.sessionCookie || !this.ws || this.ws.readyState === WebSocket.CLOSED) {
       this.sessionCookie = null;
       this.ws = null;
-      throw new Error(`Failed to connect with the Traccar WebSocket API`);
     }
   }
 
