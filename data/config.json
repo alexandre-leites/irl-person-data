@@ -8,12 +8,11 @@
     "httpPath": "/",
     "wsPath": "/ws"
   },
-  "life360": {
-    "clientToken": "Life360 Token",
-    "username": "you@me.com",
-    "password": "verysecret",
-    "circle": "MyFamily",
-    "member": "John Dear",
+  "traccar": {
+    "apiToken": "Traccar API Token",
+    "apiBaseUrl": "http://127.0.0.1/api",
+    "websocketUrl": "ws://127.0.0.1/api/socket",
+    "deviceUniqueId": "123456789",
     "fetchInterval": 60
   },
   "openweathermap": {

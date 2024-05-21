@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'http';
 import WebSocket from 'ws';
-import CircleManager from '../life360/circleManager';
+import TraccarManager from '../traccar/traccarManager';
 import GeoLocation from '../openstreetmap/geoLocation';
 import config from '../../config';
 import Weather from '../openweathermap/weather';
@@ -18,7 +18,7 @@ class ServerManager {
   private server: http.Server;
   private wss: WebSocket.Server;
 
-  private circleManager: CircleManager;
+  private traccarManager: TraccarManager;
   private geoLocation: GeoLocation;
   private weather: Weather;
 
@@ -27,7 +27,7 @@ class ServerManager {
   private lastData: UserData;
 
   constructor() {
-    this.circleManager = new CircleManager(config.life360.clientToken);
+    this.traccarManager = new TraccarManager(config.traccar.apiBaseUrl, config.traccar.websocketUrl, config.traccar.apiToken);
     this.geoLocation = new GeoLocation();
     this.weather = new Weather(config.openweathermap.apiKey);
 
@@ -72,27 +72,20 @@ class ServerManager {
 
   private async updatePositionData() {
     // Authenticate
-    logger.info('[Life360] Authenticating');
-    await this.circleManager.authorize(config.life360.username, config.life360.password);
+    logger.info('[Traccar] Connect');
+    await this.traccarManager.connect();
 
     // Fetch Data
-    logger.info('[Life360] Fetching circles');
-    await this.circleManager.fetchCircles();
-
-    // Fetch user position from Life360
-    logger.info('[Life360] Fetching user');
-    const userPosition = this.circleManager.getMemberDataByName(
-      config.life360.circle,
-      config.life360.member
-    );
+    logger.info('[Traccar] Fetching Position');
+    const userPosition = await this.traccarManager.getPositionByUniqueId(config.traccar.deviceUniqueId);
 
     this.lastData.userPosition = userPosition;
     return userPosition;
   }
 
   private async updateLocationDetails() {
-    const latitude = parseFloat(this.lastData.userPosition.location.latitude);
-    const longitude = parseFloat(this.lastData.userPosition.location.longitude);
+    const latitude = parseFloat(this.lastData.userPosition.latitude);
+    const longitude = parseFloat(this.lastData.userPosition.longitude);
 
     // Fetch geolocation data
     logger.info('[OpenStreetMap] Fetching user location details');
@@ -104,7 +97,7 @@ class ServerManager {
 
   private async updateWeatherDetails() {
     logger.info('[OpenWeatherMap] Fetching user weather details');
-    const weatherData = await this.weather.fetchWeather(this.lastData.userPosition.location.latitude, this.lastData.userPosition.location.longitude);
+    const weatherData = await this.weather.fetchWeather(this.lastData.userPosition.latitude, this.lastData.userPosition.longitude);
     this.lastData.weatherData = weatherData;
 
     return weatherData;
@@ -116,7 +109,7 @@ class ServerManager {
       var shouldUpdate = false;
       
       // Verify if we need to update position data
-      if (currentTime - this.lastPositionFetch >= (config.life360.fetchInterval * 1000)) {
+      if (currentTime - this.lastPositionFetch >= (config.traccar.fetchInterval * 1000)) {
         this.lastPositionFetch = currentTime;
         shouldUpdate = true;
 
